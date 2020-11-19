@@ -14,15 +14,15 @@ const dbURI = `mongodb+srv://${process.env.DB_ADMIN_USER}:${process.env.DB_ADMIN
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(
-    console.log("connected to db") 
-    
+    console.log("connected to db")
+
   )
   .catch(err => console.log(err));
 
-  
+
 // middleware & static files
 app.use(express.static('public'));
-app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
@@ -31,15 +31,19 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res)=> {
-    res.sendFile(__dirname +"/index.html")
-    
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html")
+
 })
 
 
-app.get("/products", (req, res) => {
-  Product.find ({title: req.body.name})
-  console.log(req.body)
+app.get("/products", async (req, res) => {
+  // TODO Use this when you give your input box name diffierent names
+  // const result = await Product.find({ title: req.body.name })
+  // TODO use this if you are using the current format of html structure
+  const result = await Product.find({ title: req.query.name[0] && req.query.name[1] })
+  console.log(req.query)
+  console.log(result)
 }
 
 
@@ -47,31 +51,21 @@ app.get("/products", (req, res) => {
 )
 
 //Just used to add data to the database
-app.get("/genReceipt", (req, res) => {
-    const product = new Product ({
+app.post("/genReceipt", (req, res) => {
+  const product = new Product({
+    title: "Ferrari",
+    price: 56773200
+  })
 
-      title: "Ferrari",
-      price: 56773200
-    })
-
-   product.save()
-
-    .then((result) =>{
-      
-       
-        res.send(result)
-        console.log("saved")
-
-     
-    }
-    )
-
-    .catch( (err) => {
-        console.log(err)
-    })
+  product.save().then((result) => {
+    res.send(result)
+    console.log("saved")
+  }).catch((err) => {
+    console.log(err)
+  })
 })
 
 
-app.listen(3000, 
+app.listen(3000,
   console.log("App listening"))
 
