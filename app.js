@@ -9,7 +9,7 @@ const Product = require("./model/product")
 
 const app = express()
 
-const dbURI = `mongodb+srv://lucifer:1234@cluster0.944yd.mongodb.net/Product?retryWrites=true&w=majority`;
+const dbURI = `mongodb+srv://${DB_ADMIN_USERNAME}:${DB_ADMIN_PASSWORD}@cluster0.944yd.mongodb.net/Product?retryWrites=true&w=majority`;
 
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
